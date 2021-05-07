@@ -1,0 +1,30 @@
+{
+  "name": "secret-hitler-discordbot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node -r esm test.js",
+    "test-dev": "nodemon -r esm test-index.js",
+    "test-two": "nodemon -r esm index-two.js",
+    "start": "node index.js",
+    "dev": "nodemon -r esm index.js"
+  },
+  "author": "Quan Bach",
+  "license": "ISC",
+  "dependencies": {
+    "canvas": "^2.7.0",
+    "discord.js": "^12.0.2",
+    "dotenv": "^8.2.0",
+    "esm": "^3.2.25",
+    "images": "^3.0.2",
+    "merge-images": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.8.4",
+    "@babel/core": "^7.9.6",
+    "@babel/node": "^7.8.7",
+    "@babel/preset-env": "^7.9.6",
+    "nodemon": "^2.0.2"
+  }
+}
