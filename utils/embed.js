@@ -34,8 +34,10 @@ const embed = {
     return {
       embed: {
         color: COLOR,
-        title: "Starting Secret Hitler",
-        description: "Click on the 🎲 reaction to join the lobby!",
+        title: "Starting Lobby for Secret Hitler",
+        description:
+          "Click on the 🎲 reaction to join the lobby!\n" +
+          "Queue is open for 5 minutes",
         fields: [
           { name: "Players in queue", value: `${players.length}` },
           { name: "\u200b", value: "\u200b" },
@@ -200,6 +202,49 @@ const embed = {
         description: `Voting for the chancellor: ${game.candidate.printMarkdownOrder()}`,
         fields: [{ name: "\u200b", value: "\u200b" }],
         timestamp: new Date(),
+      },
+    };
+  },
+
+  ElectionResults: (game) => {
+    let nayers = "\u200b";
+    let yayers = "\u200b";
+    let desc = "";
+    let currField = [{ name: "\u200b", value: "\u200b" }];
+
+    console.log(game.votes);
+
+    game.filterAlivePlayers().forEach((player) => {
+      let userId = player.user.id;
+      let vote = game.votes[userId];
+      if (vote === "yay") {
+        yayers += `\n${player.printMarkdownOrder()}`;
+      } else if (vote === "nay") {
+        nayers += `\n${player.printMarkdownOrder()}`;
+      }
+    });
+
+    let electionWin = game.processElection();
+
+    if (electionWin) {
+      desc =
+        `Election Won\n` +
+        `President and Chancellor, please check your DMs for the policy phase!`;
+    } else {
+      desc = `Votes have not been passed`;
+    }
+
+    console.log(currField);
+
+    return {
+      embed: {
+        color: COLOR,
+        title: "Election Results",
+        description: desc,
+        fields: [
+          { name: "Voted 'Yay': ", value: yayers, inline: true },
+          { name: "Voted 'Nay': ", value: nayers, inline: true },
+        ],
       },
     };
   },
@@ -394,13 +439,14 @@ const embed = {
       embed: {
         color: COLOR,
         title: "Policy Peek",
-        description: `Hello President ${game.president.printMarkdownOrder()},` + 
-        ` check your DM to see the next 3 policy cards`,
+        description:
+          `Hello President ${game.president.printMarkdownOrder()},` +
+          ` check your DM to see the next 3 policy cards`,
         timestamp: new Date(),
       },
     };
   },
-  
+
   Peek: (game) => {
     return {
       files: [DRAW],
@@ -414,38 +460,37 @@ const embed = {
     };
   },
 
-  Endgame: (game, hitlerDead=false, hitlerElect=false) => {
-    let currTitle = "FATAL ERROR!"
-    let desc = "SOMETHING TERRIBLE HAS HAPPENED REPORT WITH SCREENSHOTS PLEASE!"
+  Endgame: (game, hitlerDead = false, hitlerElect = false) => {
+    let currTitle = "FATAL ERROR!";
+    let desc =
+      "SOMETHING TERRIBLE HAS HAPPENED REPORT WITH SCREENSHOTS PLEASE!";
     if (game.fascistWins === 6) {
-      currTitle = "FASCISTS WIN!"
-      desc = "Fascists have successfully passed 6 policies!"
-    } else if (game.liberalWins === 5){
-      currTitle = "LIBERALS WIN!"
-      desc = "Liberals have successfully passed 5 policies!"
+      currTitle = "FASCISTS WIN!";
+      desc = "Fascists have successfully passed 6 policies!";
+    } else if (game.liberalWins === 5) {
+      currTitle = "LIBERALS WIN!";
+      desc = "Liberals have successfully passed 5 policies!";
     } else if (hitlerDead) {
-      currTitle = "LIBERALS WIN!"
-      desc = "Hitler has been killed!"
+      currTitle = "LIBERALS WIN!";
+      desc = "Hitler has been killed!";
     } else if (hitlerElect) {
-      currTitle = "FASCISTS WIN!"
-      desc = "Hitler has been elected chancellor"
+      currTitle = "FASCISTS WIN!";
+      desc = "Hitler has been elected chancellor";
     }
 
     let liberalTeam = "";
     let fascistTeam = "";
     let hitler = "";
 
-    game.players.forEach(player => {
-      if(player.role === HITLER) {
+    game.players.forEach((player) => {
+      if (player.role === HITLER) {
         hitler = player.printMarkdownOrder();
-      }
-      else if(player.party === FASCIST){
+      } else if (player.party === FASCIST) {
         fascistTeam = fascistTeam + player.printMarkdownOrder() + "\n";
-      }
-      else if(player.party === LIBERAL){
+      } else if (player.party === LIBERAL) {
         liberalTeam = liberalTeam + player.printMarkdownOrder() + "\n";
       }
-    })
+    });
 
     return {
       embed: {
@@ -453,14 +498,14 @@ const embed = {
         title: currTitle,
         description: desc,
         fields: [
-          {name: "Liberals: ", value: liberalTeam, inline: true},
-          {name: "Fascists: ", value: fascistTeam, inline: true},
-          {name: "Hitler: ", value: hitler,},
+          { name: "Liberals: ", value: liberalTeam, inline: true },
+          { name: "Fascists: ", value: fascistTeam, inline: true },
+          { name: "Hitler: ", value: hitler },
         ],
         timestamp: new Date(),
       },
     };
-  }
+  },
 };
 
 export default embed;

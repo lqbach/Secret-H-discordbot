@@ -28,6 +28,7 @@ class Game {
     this.ineligible = [];
     this.turn = 0;
     this.pass = 0;
+    this.electionWon = false;
 
     this.currPolicy = null;
 
@@ -260,9 +261,11 @@ class Game {
       //update chancellor when election is called
       this.chancellor = this.candidate;
       this.candidate = null;
+      this.electionWon = true;
       return true;
     } else {
       this.candidate = null;
+      this.electionWon = false;
       return false;
     }
   }
@@ -367,9 +370,9 @@ class Game {
 
   gamePlayAction() {
     if (this.currPolicy === FASCIST) {
-      return this.board.fascist_board[this.fascistWins];
-    } else {
-      return this.board.liberal_board[this.liberalWins];
+      return this.board.fascist_board[this.fascistWins-1];
+    } else if (this.currPolicy === LIBERAL) {
+      return this.board.liberal_board[this.liberalWins-1];
     }
   }
 
@@ -444,6 +447,19 @@ class Game {
   //helper class functions
   filterAlivePlayers() {
     return this.players.filter((player) => player.isAlive());
+  }
+
+  filterCandidatePlayers() {
+    return this.players.filter(
+      (player) =>
+        player.isAlive() &&
+        this.president.user.id !== player.user.id &&
+        !this.ineligible.includes(player)
+    );
+  }
+
+  findPlayerWithOrder(order) {
+    return this.players.find(player => player.order === order);
   }
 
   /**
