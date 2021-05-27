@@ -11,7 +11,9 @@ Visit their [official website](https://www.secrethitler.com/) for rules and more
 
 ## Screenshots
 
-![Screenshot 1](/images/screenshots/screenshot1.png?raw=true "Main game")
+Sample screenshots of the games below:
+
+![Screenshot 1](./images/screenshots/screenshot1.png?raw=true "Main game")
 
 ## Installation
 
